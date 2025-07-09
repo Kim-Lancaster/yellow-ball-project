@@ -1,24 +1,30 @@
 #Daily log: (from newest to oldest)
-
-### YYYY-MM-DD
+### 2025-07-??
 **Hours Worked:**  
 **From Last Time:** 
 **What I Did:** 
 **Open questions:**
 **Next steps:**
 
-### 2025-07-03
-**Hours Worked:**  10:45
+### 2025-07-09
+**Hours Worked:**  1
 **From Last Time:** 
-**What I Did:** 
+**What I Did:** Learned put Nix Flakes and created first one to handle the Pi and VM on PC
 **Open questions:**
 **Next steps:**
+
+### 2025-07-03
+**Hours Worked:**  3
+**From Last Time:** --
+**What I Did:** Got git and github set up.  Set up ssh keys for github.  Created config file inside /.ssh for github. Decided with GPT that a hybrid approach to Nix, using both plain on the pi and flake on my pc, is the approach that I will go with.
+**Open questions:** --
+**Next steps:** Learning about nix flakes so I can integrate it on with QEMU on my PC.
 
 ### 2025-07-02
 **Hours Worked:** 1.5 
 **From Last Time:** Finished the first milestone of the project - Getting NixOS on the pi with custom config. Successfully rebuild.
 **What I Did:** Cleaned house. Orginiazed project for next steps.  Began learning about Nix Flakes. Compiled a master list of milestones in project.
-**Open questions:**
+**Open questions:** --
 **Next steps:** Learn more about Flakes and if it is the right move to switch over.
 
 ### 2025-06-27

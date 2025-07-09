@@ -86,18 +86,27 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 **Notes:**
 
 ## 2025-07-03
-| System | Directory | Command                                                                                          | Description          | Notes/Output |
-| ------ | --------- | ------------------------------------------------------------------------------------------------ | -------------------- | ------------ |
-| Ubuntu | ~         | `scp root@192.168.4.2:/etc/nixos/configuration.nix Documents/yellow_ball_project/nixos`          | secure copy protocol | for git      |
-| Ubuntu | ~         | `scp root@192.168.4.2:/etc/nixos/hardware-configuration.nix Documents/yellow_ball_project/nixos` | secure copy protocol | for git      |
-|        |           | ``                                                                                               |                      |              |
-|        |           | ``                                                                                               |                      |              |
-|        |           | ``                                                                                               |                      |              |
-|        |           | ``                                                                                               |                      |              |
-|        |           | ``                                                                                               |                      |              |
-|        |           | ``                                                                                               |                      |              |
-|        |           | ``                                                                                               |                      |              |
+| System | Directory                       | Command                                                                                          | Description                   | Notes/Output                               |
+| ------ | ------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------- | ------------------------------------------ |
+| Ubuntu | ~                               | `scp root@192.168.4.2:/etc/nixos/configuration.nix Documents/yellow_ball_project/nixos`          | secure copy protocol          | for git                                    |
+| Ubuntu | ~                               | `scp root@192.168.4.2:/etc/nixos/hardware-configuration.nix Documents/yellow_ball_project/nixos` | secure copy protocol          | for git                                    |
+| Ubuntu | ~/Documents/yellow_ball_project | `git init`                                                                                       | create intial repo            |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `git add `                                                                                       | add new files                 |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `git status`                                                                                     | checking what is staged       |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `git commit -m "<**see notes>"`                                                                  | commiting new files with note |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `git branch -m master main`                                                                      | chabging branch name to main  |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `ssh-keygen -t ed25519 -C "kim-lancaster@users.noreply.github.com" -f ~/.ssh/id_ed25519_github`  | creating ssh key for repo     | has passphrase                             |
+| Ubuntu | ~/Documents/yellow_ball_project | `cat ~/.ssh/id_ed25519_github.pub`                                                               | print key to terminal         | add to github                              |
+| Ubuntu | ~/Documents/yellow_ball_project | `sudo nano ~/.ssh/config`                                                                        | creating a config file        | github need it so it know which key to use |
+| Ubuntu | ~/Documents/yellow_ball_project | `sudo chmod 600 ~/.ssh/config`                                                                   | changing permissions          | GPT recommended but not sure if necessary  |
+| Ubuntu | ~/Documents/yellow_ball_project | `eval "$(ssh-agent -s)"`                                                                         | start agent                   |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `ssh-add ~/.ssh/id_ed25519_github`                                                               | add private key               |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `ssh -T git@github.com`                                                                          | connecting over ssh           | verifying key match                        |
+| Ubuntu | ~/Documents/yellow_ball_project | `git push -u origin main`                                                                        | push to github                |                                            |
+|        |                                 | ``                                                                                               |                               |                                            |
 **Notes:**
+- "Initial project structure and import of my log files and NixOS config files."
+- Had to add public key to Github
 
 ## YYYY-MM-DD
 | System | Directory | Command | Description | Notes/Output |
