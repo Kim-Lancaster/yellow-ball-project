@@ -7,11 +7,11 @@
 **Next steps:**
 
 ### 2025-07-09
-**Hours Worked:**  1
-**From Last Time:** 
-**What I Did:** Learned put Nix Flakes and created first one to handle the Pi and VM on PC
-**Open questions:**
-**Next steps:**
+**Hours Worked:**  3
+**From Last Time:**  Continued working on learning about flakes.
+**What I Did:** Learned put Nix Flakes and created first one to handle the Pi and VM on PC.  Added public config ssh key to secret file. Solved minor issue with github and ssh again (learned more in the process).
+**Open questions:**  Do I create the VM on my PC first or connect pi peripherals first.
+**Next steps:** Get pi environment set up.  Get PC envirnment set up.
 
 ### 2025-07-03
 **Hours Worked:**  3

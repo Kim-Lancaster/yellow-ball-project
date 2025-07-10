@@ -99,15 +99,15 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu | ~/Documents/yellow_ball_project | `cat ~/.ssh/id_ed25519_github.pub`                                                               | print key to terminal         | add to github                              |
 | Ubuntu | ~/Documents/yellow_ball_project | `sudo nano ~/.ssh/config`                                                                        | creating a config file        | github need it so it know which key to use |
 | Ubuntu | ~/Documents/yellow_ball_project | `sudo chmod 600 ~/.ssh/config`                                                                   | changing permissions          | GPT recommended but not sure if necessary  |
-| Ubuntu | ~/Documents/yellow_ball_project | `eval "$(ssh-agent -s)"`                                                                         | start agent                   |                                            |
-| Ubuntu | ~/Documents/yellow_ball_project | `ssh-add ~/.ssh/id_ed25519_github`                                                               | add private key               |                                            |
+| Ubuntu | ~/Documents/yellow_ball_project | `eval "$(ssh-agent -s)"`                                                                         | start agent                   | **see notes                                |
+| Ubuntu | ~/Documents/yellow_ball_project | `ssh-add ~/.ssh/id_ed25519_github`                                                               | add private key               | **see notes                                |
 | Ubuntu | ~/Documents/yellow_ball_project | `ssh -T git@github.com`                                                                          | connecting over ssh           | verifying key match                        |
 | Ubuntu | ~/Documents/yellow_ball_project | `git push -u origin main`                                                                        | push to github                |                                            |
 |        |                                 | ``                                                                                               |                               |                                            |
 **Notes:**
 - "Initial project structure and import of my log files and NixOS config files."
 - Had to add public key to Github
-
+- I have to run `eval "$(ssh-agent -s)"` and `ssh-add ~/.ssh/id_ed25519_github` everytime I open a new shell or it I can't push to github.
 ## YYYY-MM-DD
 | System | Directory | Command | Description | Notes/Output |
 | ------ | --------- | ------- | ----------- | ------------ |
