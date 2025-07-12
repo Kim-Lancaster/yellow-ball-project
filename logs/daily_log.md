@@ -1,10 +1,18 @@
 #Daily log: (from newest to oldest)
-### 2025-07-??
-**Hours Worked:**  
-**From Last Time:** 
-**What I Did:** 
+
+### 2025-07-11
+**Hours Worked:** 3
+**From Last Time:** Started on the VM on my PC
+**What I Did:** Decided what resources to allocate to the VM - 8vCPU and 20 GiB, based off current resources available.  Installed QEMU.  Added Account to KVM.  Currently setting up a TAP + Bridge.
+**Open questions:** Ran in to questions about the LAN set up for the VM and Pi.  Want to consult mentor before I continue. 
+**Next steps:** Continue getting the VM set up
+
+### 2025-07-10
+**Hours Worked:**  5.5
+**From Last Time:** Continued with flakes - decided to switch all systems to nix flakes
+**What I Did:** Split my nix files into their own seperate remote repo.  Spent the most of the day making the transfer from plain nix on the pi over to a flake.  There were issues with sytax, git and the ssh key.  Had a big issue with the ssh key and flake.lock file.  Currently a I have had a successful flake rebuild.  This has removed git from the system unfortunately.
 **Open questions:**
-**Next steps:**
+**Next steps:** Adding git back to the nixos-flake folder.  Creating a VM on my pc using QEMU.
 
 ### 2025-07-09
 **Hours Worked:**  3

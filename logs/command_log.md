@@ -63,7 +63,7 @@
 **Notes:**  
 -  1. It is assumed that if I am working on the pi that I have already run the command to ssh in.
 -  2. I already had a network interface set up from previous tries but for a new one:
-  - ``sudo nmcli connection add \
+  - `sudo nmcli connection add \
   type ethernet \
   ifname enx00e04c68018d \
   con-name <name> \
@@ -72,7 +72,7 @@
   ipv4.addresses 192.168.4.1/24 \
   ipv4.gateway "" \
   ipv4.dns "1.1.1.1,8.8.8.8" \
-  ipv4.ignore-auto-dns yes``
+  ipv4.ignore-auto-dns yes`
 - 3. I have broken the whole command into seperate lines for readability - should be entered in one chunck like the above example with nmcli add.
 sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 
@@ -96,6 +96,7 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu | ~/Documents/yellow_ball_project | `git commit -m "<**see notes>"`                                                                  | commiting new files with note |                                            |
 | Ubuntu | ~/Documents/yellow_ball_project | `git branch -m master main`                                                                      | chabging branch name to main  |                                            |
 | Ubuntu | ~/Documents/yellow_ball_project | `ssh-keygen -t ed25519 -C "kim-lancaster@users.noreply.github.com" -f ~/.ssh/id_ed25519_github`  | creating ssh key for repo     | has passphrase                             |
+| Ubuntu | ~/Documents/yellow_ball_project | `git remote add origin git@github.com:kim-lancaster/yellow-ball-project.git`                     |                               |                                            |
 | Ubuntu | ~/Documents/yellow_ball_project | `cat ~/.ssh/id_ed25519_github.pub`                                                               | print key to terminal         | add to github                              |
 | Ubuntu | ~/Documents/yellow_ball_project | `sudo nano ~/.ssh/config`                                                                        | creating a config file        | github need it so it know which key to use |
 | Ubuntu | ~/Documents/yellow_ball_project | `sudo chmod 600 ~/.ssh/config`                                                                   | changing permissions          | GPT recommended but not sure if necessary  |
@@ -103,12 +104,62 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu | ~/Documents/yellow_ball_project | `ssh-add ~/.ssh/id_ed25519_github`                                                               | add private key               | **see notes                                |
 | Ubuntu | ~/Documents/yellow_ball_project | `ssh -T git@github.com`                                                                          | connecting over ssh           | verifying key match                        |
 | Ubuntu | ~/Documents/yellow_ball_project | `git push -u origin main`                                                                        | push to github                |                                            |
-|        |                                 | ``                                                                                               |                               |                                            |
+
 **Notes:**
 - "Initial project structure and import of my log files and NixOS config files."
 - Had to add public key to Github
 - I have to run `eval "$(ssh-agent -s)"` and `ssh-add ~/.ssh/id_ed25519_github` everytime I open a new shell or it I can't push to github.
-## YYYY-MM-DD
+
+## 2025-07-10
+| System  | Directory                     | Command                                                                                                  | Description                 | Notes/Output             |
+| ------- | ----------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------- | ------------------------ |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `git init`                                                                                               | *This following git init    |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `git add `                                                                                               | *was for a seperate repo    |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `git status`                                                                                             | *that contained just the    |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `git commit -m "<message>"`                                                                              | *nix config and flake       |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `git branch -m master main`                                                                              | *files in keeping with the  |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `ssh-keygen -t ed25519 -C "kim-lancaster@users.noreply.github.com" -f ~/.ssh/id_ed25519_github`          | *industry standard          | has passphrase           |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `git remote add origin git@github.com:kim-lancaster/yellow-ball-nixos.git`                               | *                           |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `eval "$(ssh-agent -s)"`                                                                                 | *                           |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `ssh-add ~/.ssh/id_ed25519_github`                                                                       | *                           |                          |
+| Ubuntu  | ~/Documents/yellow_ball_nixos | `ssh -A root@192.168.4.2`                                                                                | ssh with forwarding agent   | so I can ssh into github |
+| ssh Nix | /etc                          | `nix-shell -p git --run "git clone git@github.com:kim-lancaster/yellow-ball-nixos.git /etc/nixos-flake"` | cloning repo to nixos-flake |                          |
+| ssh Nix | ROOT                          | `nixos-rebuild switch`                                                                                   | rebuild to add flakes       |                          |
+| ssh Nix | ROOT                          | `nix flake show /etc/nixos-flake`                                                                        | syntax check                | sanity check             |
+| ssh Nix | ROOT                          | `sudo nixos-rebuild switch --flake /etc/nixos-flake#ybp-pi`                                              | flake rebuild               | FAILED **see notes       |
+| ssh Nix | /etc/nixos-flake              | `nix flake update --recreate-lock-file`                                                                  | updagte flake.lock          | because of half build    |
+| ssh Nix | /etc/nixos-flake              | `sudo nixos-rebuild switch --flake .#ybp-pi`                                                             | flake rebuild               | inside flake folder      |
+|         |                               | ``                                                                                                       |                             |                          |
+**Notes:**
+- Before the rebuild there were modifications made to the configuration.nix file so that flakes could be used moving forward.
+- There was some error in the above, you do not need to run the flake update if the flake rebuilds correctly the first time.
+- As you can see, the all Nix files were moved to their own repo.
+
+## 2025-07-11
+| System  | Directory | Command                                                                                       | Description                                                         | Notes/Output                       |
+| ------- | --------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------- |
+| ssh Nix | ROOT      | `du -s /nix/store \| numfmt --to=iec`                                                         | checking disk space of nix/store                                    | **see notes                        |
+| Ubuntu  | ~         | `lscpu ...`                                                                                   | checking cpu virtualization                                         | **see notes                        |
+| Ubuntu  | ~         | `nproc`                                                                                       | checking number of cpu cores                                        | for VM **see notes1                |
+| Ubuntu  | ~         | `uptime`                                                                                      | check how long system up and load                                   | for VM **see notes2                |
+| Ubuntu  | ~         | `ls -l /dev/kvm`                                                                              | comfirm KVM exist                                                   | for VM                             |
+| Ubuntu  | ~         | `ls -l /dev/net/tun`                                                                          | Verifies that the TUN/TAP driver is present                         | for VM                             |
+| Ubuntu  | ~         | `grep -E --color ...`                                                                         | checking that CPU exposes Virtualization                            | for VM **see notes4                |
+| Ubuntu  | ~         | `sudo apt update && sudo apt install -y qemu-system-x86 qemu-utils bridge-utils dnsmasq-base` | Installs the user-space emulator, helper utilities and bridge-utils | for VM                             |
+|         |           | `sudo adduser $USER kvm`                                                                      | Add my account to KVM                                               | for VM  can start VMs without sudo |
+|         |           | `ip link show`                                                                                | checking for LAN                                                    |                                    |
+|         |           | `sudo ip link add name br0 type bridge`                                                       | makes a new logical “switch” inside the kernel                      |                                    |
+|         |           | `sudo ip link set dev enx00e04c68018d master br0`                                             | Removes enx00e04c68018d from its old network and attaches it to br0 |                                    |
+|         |           | `sudo ip link set dev enx00e04c68018d up`                                                     | Activate interface enx                                              |                                    |
+|         |           | `sudo ip link set dev br0 up`                                                                 | Activate interface br0                                              |                                    |
+
+**Notes:**
+- 1. The \ is used to escape the | character for the purpose of this document only - omit during use!
+- 2. Issue with character escape.  Whole command: `lscpu | grep -E '(Virtualization|vmx|svm)'`
+- 3. Used these two commands together to see how much resources I can spare to the Nix VM
+- 4. `grep -E --color "vmx|svm" /proc/cpuinfo | head`
+
+## 2025-07-??
 | System | Directory | Command | Description | Notes/Output |
 | ------ | --------- | ------- | ----------- | ------------ |
 |        |           | ``      |             |              |
@@ -120,4 +171,22 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 |        |           | ``      |             |              |
 |        |           | ``      |             |              |
 |        |           | ``      |             |              |
+|        |           | ``      |             |              |
+
+**Notes:**
+
+## 2025-07-??
+| System | Directory | Command | Description | Notes/Output |
+| ------ | --------- | ------- | ----------- | ------------ |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+|        |           | ``      |             |              |
+
 **Notes:**
