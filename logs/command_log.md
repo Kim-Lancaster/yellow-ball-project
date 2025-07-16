@@ -146,30 +146,59 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu  | ~         | `ls -l /dev/net/tun`                                                                          | Verifies that the TUN/TAP driver is present                         | for VM                             |
 | Ubuntu  | ~         | `grep -E --color ...`                                                                         | checking that CPU exposes Virtualization                            | for VM **see notes4                |
 | Ubuntu  | ~         | `sudo apt update && sudo apt install -y qemu-system-x86 qemu-utils bridge-utils dnsmasq-base` | Installs the user-space emulator, helper utilities and bridge-utils | for VM                             |
-|         |           | `sudo adduser $USER kvm`                                                                      | Add my account to KVM                                               | for VM  can start VMs without sudo |
-|         |           | `ip link show`                                                                                | checking for LAN                                                    |                                    |
-|         |           | `sudo ip link add name br0 type bridge`                                                       | makes a new logical “switch” inside the kernel                      |                                    |
-|         |           | `sudo ip link set dev enx00e04c68018d master br0`                                             | Removes enx00e04c68018d from its old network and attaches it to br0 |                                    |
-|         |           | `sudo ip link set dev enx00e04c68018d up`                                                     | Activate interface enx                                              |                                    |
-|         |           | `sudo ip link set dev br0 up`                                                                 | Activate interface br0                                              |                                    |
+| Ubuntu  | ~         | `sudo adduser $USER kvm`                                                                      | Add my account to KVM                                               | for VM  can start VMs without sudo |
+| Ubuntu  | ~         | `ip link show`                                                                                | checking for LAN                                                    |                                    |
+| Ubuntu  | ~         | `sudo ip link add name br0 type bridge`                                                       | makes a new logical “switch” inside the kernel                      |                                    |
+| Ubuntu  | ~         | `sudo ip link set dev enx00e04c68018d master br0`                                             | Removes enx00e04c68018d from its old network and attaches it to br0 |                                    |
+| Ubuntu  | ~         | `sudo ip link set dev enx00e04c68018d up`                                                     | Activate interface enx                                              |                                    |
+| Ubuntu  | ~         | `sudo ip link set dev br0 up`                                                                 | Activate interface br0                                              |                                    |
 
 **Notes:**
 - 1. The \ is used to escape the | character for the purpose of this document only - omit during use!
 - 2. Issue with character escape.  Whole command: `lscpu | grep -E '(Virtualization|vmx|svm)'`
 - 3. Used these two commands together to see how much resources I can spare to the Nix VM
 - 4. `grep -E --color "vmx|svm" /proc/cpuinfo | head`
+- 5. Remember that all ip commands are not persistant and need to be re run to set up br0
+
+## 2025-07-15
+| System | Directory                     | Command                                                                | Description                                             | Notes/Output                                      |
+| ------ | ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------- |
+| Ubuntu | ~                             | `sudo ip addr add 192.168.4.1/24 dev br0`                              | assigning static address to bridge interface            |                                                   |
+| Ubuntu | ~                             | `sudo ip link set br0 up`                                              | bringing up previously assigned interface               |                                                   |
+| Ubuntu | ~                             | `curl -L https://nixos.org/nix/install \| sh`                          | grabbing nix from address and piping to shell           | shell must be restarted                           |
+| Ubuntu | ~                             | `. /home/kimdev/.nix-profile/etc/profile.d/nix.sh`                     | ensuring environment variables are set                  |                                                   |
+| Ubuntu | ~                             | `nix --version`                                                        | checking nix is installed                               | nix (Nix) 2.30.1                                  |
+| Ubuntu | ~                             | `mkdir -p ~/.config/nix`                                               | creating folder for nix.conf                            | becaue build failed                               |
+| Ubuntu | ~                             | `nano ~/.config/nix/nix.conf`                                          | creating nix.conf                                       | Add: `experimental-features = nix-command flakes` |
+| Ubuntu | ~                             | `exec $SHELL`                                                          | reload shell                                            |                                                   |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `nix build .#nixosConfigurations.dev-vm.config.system.build.qemuImage` | creating flake and VM                                   | FAILED                                            |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `nix build .#nixosConfigurations.dev-vm.config.system.build.vm`        | QEMU doesn't expose a qemuImage target used .vm instead | FAILED                                            |
+
+**Notes:**
+- Because the ip commands are non-persistant these attributes will be set again later with nmcli (probably)
+
+## 2025-07-16
+| System | Directory                           | Command                                                                    | Description                                  | Notes/Output   |
+| ------ | ----------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------- | -------------- |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `mkdir -p nixos/secrets`                                                   | making folder for .pub file                  |                |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `ssh-keygen -t ed25519 -C "nix-vm-admin" -f ./nixos/secrets/root-ssh-keys` | creating key and saving to specific folder   | has passphrase |
+| Ubuntu | ~/Documents/yellow_ball_nixos/nixos | `sudo nano dev-vm.nix`                                                     | create configuration file for vm             |                |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `git add .`                                                                | staging all files                            | **see note     |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `git add -f nixos/secrets/root-ssh-keys.pub`                               | force add file from .gitignore               | **see note     |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `git commit -m "<message>"`                                                | commiting change                             | **see note     |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `nix build .#nixosConfigurations.dev-vm.config.system.build.vm`            | build the vm                                 |                |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `git rm --cached nixos/secrets/root-ssh-keys.pub`                          | removes ssh key fit index but leaves on disk |                |
+| Ubuntu | ~/Documents/yellow_ball_nixos       | `git commit -m "Stop tracking VM public key"`                              | re-commiting for future push                 |                |
+|        |                                     | ``                                                                         |                                              |                |
+|        |                                     | ``                                                                         |                                              |                |
+
+**Notes:**
+- The files have to be Git indexed so that they will survive the flake-source copy.
+- The public key has to be commited locally which adds extra steps to key it from the remote repo
 
 ## 2025-07-??
 | System | Directory | Command | Description | Notes/Output |
 | ------ | --------- | ------- | ----------- | ------------ |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
 |        |           | ``      |             |              |
 |        |           | ``      |             |              |
 
@@ -180,12 +209,28 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | ------ | --------- | ------- | ----------- | ------------ |
 |        |           | ``      |             |              |
 |        |           | ``      |             |              |
+
+**Notes:**
+
+## 2025-07-??
+| System | Directory | Command | Description | Notes/Output |
+| ------ | --------- | ------- | ----------- | ------------ |
 |        |           | ``      |             |              |
 |        |           | ``      |             |              |
+
+**Notes:**
+
+## 2025-07-??
+| System | Directory | Command | Description | Notes/Output |
+| ------ | --------- | ------- | ----------- | ------------ |
 |        |           | ``      |             |              |
 |        |           | ``      |             |              |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
+
+**Notes:**
+
+## 2025-07-??
+| System | Directory | Command | Description | Notes/Output |
+| ------ | --------- | ------- | ----------- | ------------ |
 |        |           | ``      |             |              |
 |        |           | ``      |             |              |
 

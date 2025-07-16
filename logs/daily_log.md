@@ -1,5 +1,19 @@
 #Daily log: (from newest to oldest)
 
+### 2025-07-16
+**Hours Worked:** 4
+**From Last Time:** Build issues for the vm
+**What I Did:** Solved the build issues. Solution: the files had to be commited to the local repo to survive the flake-source copy.  Immediately ran into an issue with pushing my private ssh key to the remote repo.  Solved this stupid mistake by scrubbing the history and creating new keys.  Ran into the same build issue again because my public ssh keys has not been commited to the local repo - they are in the .gitignore file.  Solution: when back and forced the commit for the public key, built the vm, then used git rm --cached to keep it local but remove it from what will be pushed.  This worked.
+**Open questions:**
+**Next steps:** Run the VM successfully
+
+### 2025-07-15
+**Hours Worked:** 2
+**From Last Time:**
+**What I Did:** Did work getting the vm configuration correct inside the flake file.  Had a lot of errors regarding the build.  Did not solve this build issue.
+**Open questions:** What is causing the build issue
+**Next steps:** Keep working on the build
+
 ### 2025-07-11
 **Hours Worked:** 3
 **From Last Time:** Started on the VM on my PC
