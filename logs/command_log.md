@@ -14,9 +14,9 @@
 | Ubuntu | ~         | `sudo mount /dev/mmcblk0p1 /mnt/pi-boot`                                          | mounting the partition         | already done on previous iteration              |
 | Ubuntu | ~         | `sudo mount /dev/mmcblk0p2 /mnt/pi-root`                                          | mounting the partition         | already done on previous iteration              |
 **Notes:** 
-- full address for compressed image
-  - 1. wget https://hydra.nixos.org/build/298477550/download/1/nixos-image-sd-card-25.05.802746.7282cb574e06-aarch64-linux.img.zst
-  - 2. nixos-image-sd-card-25.05.802746.7282cb574e06-aarch64-linux.img
+  - full address for compressed image
+    1. wget https://hydra.nixos.org/build/298477550/download/1/nixos-image-sd-card-25.05.802746.7282cb574e06-aarch64-linux.img.zst
+    2. nixos-image-sd-card-25.05.802746.7282cb574e06-aarch64-linux.img
 
 ## 2025-06-25
 | System  | Directory | Command                                                                                | Description                  | Notes/Output                                    |
@@ -34,9 +34,9 @@
 | ssh Nix | ROOT      | `nixos-generate-config --root /  `                                                     | run generator                | To create the hardware-config file              |
 | ssh Nix | ROOT      | `nixos-generate-config --show-hardware-config > /etc/nixos/hardware-configuration.nix` | creating the hardware config |                                                 |
 | ssh Nix | ROOT      | `nixos-rebuild switch`                                                                 | rebuild system               | recieved many errors - lucky me  **see notes    |
-**Notes:** 
-- 1. I had to clear out a stale host key from my last try.
-- 2. Had errors because of the configuration.nix file and lack of internet connection.
+**Notes:**
+  - I had to clear out a stale host key from my last try.
+  - Had errors because of the configuration.nix file and lack of internet connection.
   - Left command in because it is because it is correct if you have connection to a router - I do not.
 
 ## 2025-06-26
@@ -61,19 +61,10 @@
 | ssh Nix | ROOT      | `ping -c 3 cache.nixos.org`                                    | DNS Test                      | Failed                                        |  |
 
 **Notes:**  
--  1. It is assumed that if I am working on the pi that I have already run the command to ssh in.
--  2. I already had a network interface set up from previous tries but for a new one:
-  - `sudo nmcli connection add \
-  type ethernet \
-  ifname enx00e04c68018d \
-  con-name <name> \
-  autoconnect yes \
-  ipv4.method manual \
-  ipv4.addresses 192.168.4.1/24 \
-  ipv4.gateway "" \
-  ipv4.dns "1.1.1.1,8.8.8.8" \
-  ipv4.ignore-auto-dns yes`
-- 3. I have broken the whole command into seperate lines for readability - should be entered in one chunck like the above example with nmcli add.
+  - It is assumed that if I am working on the pi that I have already run the command to ssh in.
+  - I already had a network interface set up from previous tries but for a new one:
+    - `sudo nmcli connection add type ethernet ifname enx00e04c68018d con-name <name> autoconnect yes ipv4.method manual ipv4.addresses 192.168.4.1/24 ipv4.gateway "" ipv4.dns "1.1.1.1,8.8.8.8" ipv4.ignore-auto-dns yes`
+  - I have broken the whole command into seperate lines for readability - should be entered in one chunck like the above example with nmcli add.
 sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 
 ## 2025-06-27
@@ -106,9 +97,9 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu | ~/Documents/yellow_ball_project | `git push -u origin main`                                                                        | push to github                |                                            |
 
 **Notes:**
-- "Initial project structure and import of my log files and NixOS config files."
-- Had to add public key to Github
-- I have to run `eval "$(ssh-agent -s)"` and `ssh-add ~/.ssh/id_ed25519_github` everytime I open a new shell or it I can't push to github.
+  - "Initial project structure and import of my log files and NixOS config files."
+  - Had to add public key to Github
+  - I have to run `eval "$(ssh-agent -s)"` and `ssh-add ~/.ssh/id_ed25519_github` everytime I open a new shell or it I can't push to github.
 
 ## 2025-07-10
 | System  | Directory                     | Command                                                                                                  | Description                 | Notes/Output             |
@@ -131,9 +122,9 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | ssh Nix | /etc/nixos-flake              | `sudo nixos-rebuild switch --flake .#ybp-pi`                                                             | flake rebuild               | inside flake folder      |
 |         |                               | ``                                                                                                       |                             |                          |
 **Notes:**
-- Before the rebuild there were modifications made to the configuration.nix file so that flakes could be used moving forward.
-- There was some error in the above, you do not need to run the flake update if the flake rebuilds correctly the first time.
-- As you can see, the all Nix files were moved to their own repo.
+  - Before the rebuild there were modifications made to the configuration.nix file so that flakes could be used moving forward.
+  - There was some error in the above, you do not need to run the flake update if the flake rebuilds correctly the first time.
+  - As you can see, the all Nix files were moved to their own repo.
 
 ## 2025-07-11
 | System  | Directory | Command                                                                                       | Description                                                         | Notes/Output                       |
@@ -154,11 +145,11 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu  | ~         | `sudo ip link set dev br0 up`                                                                 | Activate interface br0                                              |                                    |
 
 **Notes:**
-- 1. The \ is used to escape the | character for the purpose of this document only - omit during use!
-- 2. Issue with character escape.  Whole command: `lscpu | grep -E '(Virtualization|vmx|svm)'`
-- 3. Used these two commands together to see how much resources I can spare to the Nix VM
-- 4. `grep -E --color "vmx|svm" /proc/cpuinfo | head`
-- 5. Remember that all ip commands are not persistant and need to be re run to set up br0
+  1. The \ is used to escape the | character for the purpose of this document only - omit during use!
+  2. Issue with character escape.  Whole command: `lscpu | grep -E '(Virtualization|vmx|svm)'`
+  3. Used these two commands together to see how much resources I can spare to the Nix VM
+  4. `grep -E --color "vmx|svm" /proc/cpuinfo | head`
+  5. Remember that all ip commands are not persistant and need to be re run to set up br0
 
 ## 2025-07-15
 | System | Directory                     | Command                                                                | Description                                             | Notes/Output                                      |
@@ -175,7 +166,7 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu | ~/Documents/yellow_ball_nixos | `nix build .#nixosConfigurations.dev-vm.config.system.build.vm`        | QEMU doesn't expose a qemuImage target used .vm instead | FAILED                                            |
 
 **Notes:**
-- Because the ip commands are non-persistant these attributes will be set again later with nmcli (probably)
+  - Because the ip commands are non-persistant these attributes will be set again later with nmcli (probably)
 
 ## 2025-07-16
 | System | Directory                           | Command                                                                    | Description                                  | Notes/Output   |
@@ -193,8 +184,8 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 |        |                                     | ``                                                                         |                                              |                |
 
 **Notes:**
-- The files have to be Git indexed so that they will survive the flake-source copy.
-- The public key has to be commited locally which adds extra steps to key it from the remote repo
+  - The files have to be Git indexed so that they will survive the flake-source copy.
+  - The public key has to be commited locally which adds extra steps to key it from the remote repo
 
 ## 2025-07-??
 | System | Directory | Command | Description | Notes/Output |
