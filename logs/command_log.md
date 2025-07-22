@@ -99,7 +99,7 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 **Notes:**
   - "Initial project structure and import of my log files and NixOS config files."
   - Had to add public key to Github
-  - I have to run `eval "$(ssh-agent -s)"` and `ssh-add ~/.ssh/id_ed25519_github` everytime I open a new shell or it I can't push to github.
+  - I have to run `ssh-add ~/.ssh/id_ed25519_github` everytime I open a new shell or it I can't push to github.
 
 ## 2025-07-10
 | System  | Directory                     | Command                                                                                                  | Description                 | Notes/Output             |
@@ -120,7 +120,7 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | ssh Nix | ROOT                          | `sudo nixos-rebuild switch --flake /etc/nixos-flake#ybp-pi`                                              | flake rebuild               | FAILED **see notes       |
 | ssh Nix | /etc/nixos-flake              | `nix flake update --recreate-lock-file`                                                                  | updagte flake.lock          | because of half build    |
 | ssh Nix | /etc/nixos-flake              | `sudo nixos-rebuild switch --flake .#ybp-pi`                                                             | flake rebuild               | inside flake folder      |
-|         |                               | ``                                                                                                       |                             |                          |
+
 **Notes:**
   - Before the rebuild there were modifications made to the configuration.nix file so that flakes could be used moving forward.
   - There was some error in the above, you do not need to run the flake update if the flake rebuilds correctly the first time.
@@ -180,36 +180,67 @@ sudo nmcli connection modify "Wired connection 1" ipv4.method shared
 | Ubuntu | ~/Documents/yellow_ball_nixos       | `nix build .#nixosConfigurations.dev-vm.config.system.build.vm`            | build the vm                                 |                |
 | Ubuntu | ~/Documents/yellow_ball_nixos       | `git rm --cached nixos/secrets/root-ssh-keys.pub`                          | removes ssh key fit index but leaves on disk |                |
 | Ubuntu | ~/Documents/yellow_ball_nixos       | `git commit -m "Stop tracking VM public key"`                              | re-commiting for future push                 |                |
-|        |                                     | ``                                                                         |                                              |                |
-|        |                                     | ``                                                                         |                                              |                |
 
 **Notes:**
   - The files have to be Git indexed so that they will survive the flake-source copy.
   - The public key has to be commited locally which adds extra steps to key it from the remote repo
 
-## 2025-07-??
-| System | Directory | Command | Description | Notes/Output |
-| ------ | --------- | ------- | ----------- | ------------ |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
+## 2025-07-17
+| System | Directory | Command                                                                                                              | Description                             | Notes/Output                    |
+| ------ | --------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------- |
+| Ubuntu | ~         | `nmcli connection delete <interface name>`                                                                           | deleting old previous network interface | Run for all related to project  |
+| Ubuntu | ~         | `nmcli connection add con-name br0 type bridge ifname br0 stp no ipv4.method manual ipv4.addresses 192.168.4.1/24`   | creating br0 bridge /switch             |                                 |
+| Ubuntu | ~         | `nmcli connection add con-name br0-enx00 type ethernet ifname enx00e04c68018d master br0`                            | creating enx00 and connecting to br0    |                                 |
+| Ubuntu | ~         | `nmcli connection add type tun ifname tap0 con-name br0-tap0 mode tap owner "$(id -u)" slave-type bridge master br0` | Create tap and tell NM it's a bridge    | other ways didn't work this did |
+| Ubuntu | ~         | `nmcli connection up br0`                                                                                            | bringing br0                            |                                 |
+| Ubuntu | ~         | `nmcli connection up br0-enx00`                                                                                      | bringing enx00 up                       |                                 |
+| Ubuntu | ~         | `nmcli connection up br0-tap0`                                                                                       | bringing tap0 up                        |                                 |
+| Ubuntu | ~         | ``                                                                                                                   |                                         |                                 |
 
 **Notes:**
+  - I had to delete all previous network interfaces to re-setup my PC as a switch.  I tried to keep the steps as clean as possible but I've done them over many days.
+  - Using `nmcli connection delete <interface name> is the should be run to start from scratch.
 
-## 2025-07-??
-| System | Directory | Command | Description | Notes/Output |
-| ------ | --------- | ------- | ----------- | ------------ |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
+## 2025-07-18
+| System | Directory                     | Command                                                                                                                            | Description               | Notes/Output                                         |
+| ------ | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ---------------------------------------------------- |
+| Ubuntu | ~                             | `echo '. "$HOME/.nix-profile/etc/profile.d/nix.sh"' >> ~/.bashrc`                                                                  | Adding nix to path        | Did not realize the earlier change was not permanent |
+| Ubuntu | ~                             | `source ~/.bashrc`                                                                                                                 | Immediately apply changes |                                                      |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `rm -f /tmp/nixos-*.raw`                                                                                                           | Delete old working disk   | **see notes                                          |
+| SEE    | NOTES FOR                     | MISSING STEPS                                                                                                                      |                           |                                                      |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `./result/bin/run-dev-vm-vm -netdev tap,id=net0,ifname=tap0,script=no,downscript=no -device virtio-net-pci,netdev=net0 -nographic` |                           |                                                      |
 
-**Notes:**
-
-## 2025-07-??
-| System | Directory | Command | Description | Notes/Output |
-| ------ | --------- | ------- | ----------- | ------------ |
-|        |           | ``      |             |              |
-|        |           | ``      |             |              |
 
 **Notes:**
+  - After the `rm -f /tmp/nixos-*.raw` on row 3 I again had to run the following commands:
+    1. `git add -f nixos/secrets/root-ssh-keys.pub`
+    2. `git commit -m "<message>"`
+    3. `nix build .#nixosConfigurations.dev-vm.config.system.build.vm`
+    4. `git rm --cached nixos/secrets/root-ssh-keys.pub`
+    5. `git commit -m "Stop tracking VM public key"`
+   - This is because I have to have the ssh key indexed for now - looking for solution
+
+
+## 2025-07-22
+| System | Directory                     | Command                                  | Description                 | Notes/Output                        |
+| ------ | ----------------------------- | ---------------------------------------- | --------------------------- | ----------------------------------- |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `./result/bin/run-dev-vm-vm -nographic`  | Launch the VM               | without flags after config update   |
+| Nix VM | ROOT                          | `mkdir -p /root/.ssh`                    | create ssh folder           |                                     |
+| Nix VM | ROOT                          | `chmod 700 /root/.ssh`                   | change permissions          |                                     |
+| Nix VM | ROOT                          | `nano /root/.ssh/authorized_keys`        | adding public key           | **see notes                         |
+| Nix VM | ROOT                          | `chmod 600 /root/.ssh/authorized_keys`   | putting perms back          |                                     |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `sudo chown kimdev:kimdev ~/.ssh/config` | changing ownership for .ssh | Admin work to add ssh config for VM |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `chmod 600 ~/.ssh/config`                | changing perms              |                                     |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `nano ~/.ssh/config`                     |                             |                                     |
+| Ubuntu | ~/Documents/yellow_ball_nixos | `ssh dev-vm`                             | VM has name now             | **see notes                                    |
+
+**Notes:**
+- I tried to pass the public ssh key inside of the dev-vm.nix config file but for some reason hadd issue this is the path of least resistance.
+- `# Dev VM\ 
+    Host dev-vm\
+    HostName 192.168.4.3\
+    User root\
+    IdentityFile /home/kimdev/Documents/yellow_ball_nixos/nixos/secrets/root-ssh-keys`
 
 ## 2025-07-??
 | System | Directory | Command | Description | Notes/Output |

@@ -1,23 +1,37 @@
 # Daily log:
+
 ### 
 - **Hours Worked:**
 - **From Last Time:**
 - **What I Did:**
 - **Open questions:**
 - **Next steps:**
+- 
+### 2025-07-22
+- **Hours Worked:** 2.5/3
+- **From Last Time:** I was able to log in using the same password... it didn't seem to matter that the attribute was initalPassword and not just password.  The goal was to ssh in anyway.
+- **What I Did:** Was finally able to get my PC to ping the VM and the VM to ping my PC.  Fixed issue with the network that was causing this problem. Had to force QEMU to start with no NIC and then add the TAP backed NIC. Now they can see each other.  There was an issue with the ssh key yet again.  This was solved by copying the public key from my PC into the correct folder on the VM, not eloquent but works.  There I created a ssh config for the VM to simplify the protal.
+- **Open questions:**
+- **Next steps:** Find a replacement for the SD Card holding the OS and connect the TPU.
+
+### 2025-07-18
+- **Hours Worked:** 2.5
+- **From Last Time:** Can't login to NixOS VM even though PasswordAuthentication is false and PermitRootLogin is without-password.
+- **What I Did:** Tried setting a password in the config file. Tried slightly different syntax with the password attribute. Tried setting a hash password second. Added a attribute about users which did nothing.  Tried deleting old working disk and building again.  I DID IT!  I deleted the .qcow2 file. Added the initialPassword to the config file. Re-built and ran the VM.  root and tempPassword worked to log into root.
+- **Next steps:** Can I do it again?
 
 ### 2025-07-17
-- **Hours Worked:**
-- **From Last Time:**
-- **What I Did:**
-- **Open questions:**
-- **Next steps:**
+- **Hours Worked:** 2
+- **From Last Time:** Need handle password issue.  Ssh in once and change settings to no password.
+- **What I Did:** Spent the whole time figuring out the networking issues between my PC, the pi and the VM.  Had to undo all previous ip and nm network settings.  Then go back in with nmcli to make my PC act as a switch for the 3.  Started the VM for the first time.  Was prompted for a password which should not have happened as this setting is marked as false.  It should be accessable with ssh key only.
+- **Open questions:** Why did I still need a password if my config file build without error?
+- **Next steps:** Get into the VM with or without a password
 
 ### 2025-07-16
 - **Hours Worked:** 4
 - **From Last Time:** Build issues for the vm
-- **What I Did:** Solved the build issues. Solution: the files had to be commited to the local repo to survive the flake-source copy.  Immediately ran into an issue with pushing my private ssh key to the remote repo.  Solved this stupid mistake by scrubbing the history and creating new keys.  Ran into the same build issue again because my public ssh keys has not been commited to the local repo - they are in the .gitignore file.  Solution: when back and forced the commit for the public key, built the vm, then used git rm --cached to keep it local but remove it from what will be pushed.  This worked.
-- **Open questions:**
+- **What I Did:** Solved the build issues. Solution: the files had to be commited to the local repo to survive the flake-source copy.  Immediately ran into an issue with pushing my private ssh key to the remote repo.  Solved this stupid mistake by scrubbing the history and creating new keys.  Ran into the same build issue again because my public ssh keys has not been commited to the local repo - they are in the .gitignore file.  Solution: when back and forced the commit for the public key, built the vm, then used git rm --cached to keep it local but remove it from what will be pushed.  This worked. Build VM for first time - was prompted for password.  Password was suppose to be disabled.
+- **Open questions:** 
 - **Next steps:** Run the VM successfully
 
 ### 2025-07-15
